@@ -4,12 +4,11 @@ import { useState } from "react";
 import slugify from 'slugify';
 import { v4 as uuid } from 'uuid';
 
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Typography from "@/components/ui/typography"
 import { useCreateWorkspaceValues } from "@/hooks/create-workspace-values";
-import ImageUpload from "./image-upload";
+import ImageUpload from "@/components/image-upload";
 import { createWorkspace } from "@/actions/create-workspace";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
