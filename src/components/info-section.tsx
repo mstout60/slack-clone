@@ -7,20 +7,25 @@ import { FC, useState } from "react";
 import { FaArrowDown, FaArrowUp, FaPlus } from "react-icons/fa6";
 import Typography from "@/components/ui/typography";
 import CreateChannelDialog from "@/components/create-channel-dialog";
-import { getCurrentWorkspaceData } from "@/actions/workspaces";
-import { User, Workspace } from "@/types/app";
+import { Channel, User, Workspace } from "@/types/app";
+import { useRouter } from "next/navigation";
 
 const InfoSection: FC<{
     userData: User;
     currentWorkspaceData: Workspace;
+    userWorkspaceChannels: Channel[];
+    currentChannelId: string;
 }> = ({
     userData,
-    currentWorkspaceData
+    currentWorkspaceData,
+    userWorkspaceChannels,
+    currentChannelId,
 }) => {
         const { color } = useColorPreferences();
-        const [isChannelCollapsed, setIsChannelColapsed] = useState(false);
-        const [isDirectMessageCollapsed, setIsDirectMessageColapsed] = useState(false);
+        const [isChannelCollapsed, setIsChannelColapsed] = useState(true);
+        const [isDirectMessageCollapsed, setIsDirectMessageColapsed] = useState(true);
         const [dialogOpen, setDialogOpen] = useState(false);
+        const router = useRouter();
 
 
         let backgroundColor = 'bg-primary-light';
@@ -30,12 +35,17 @@ const InfoSection: FC<{
             backgroundColor = 'bg-blue-900';
         }
 
-        let hoverBg = 'hover:bg-primary-dark';
+        let secondaryBg = 'bg-primary-dark';
         if (color === 'green') {
-            hoverBg = 'hover:bg-green-700';
+            secondaryBg = 'bg-green-700';
         } else if (color === 'blue') {
-            hoverBg = 'hover:bg-blue-700';
+            secondaryBg = 'bg-blue-700';
         }
+
+        const navigateToChannel = (channelId: string) => {
+            const url = `/workspace/${currentWorkspaceData.id}/channels/${channelId}`;
+            router.push(url);
+        };
 
         return (
             <div
@@ -60,21 +70,25 @@ const InfoSection: FC<{
                                         className="font-bold"
                                     />
                                 </CollapsibleTrigger>
-                                <div className={cn('cursor-pointer p-2 rounded-full', hoverBg)}>
+                                <div className={cn('cursor-pointer p-2 rounded-full', `hover:${secondaryBg}`)}>
                                     <FaPlus onClick={() => setDialogOpen(true)} />
                                 </div>
                             </div>
                             <CollapsibleContent>
-                                <Typography
-                                    variant="p"
-                                    text="# channel-name 1"
-                                    className={cn('px-2 py-1 rounded-sm cursor-pointer', hoverBg)}
-                                />
-                                <Typography
-                                    variant="p"
-                                    text="# channel-name 2"
-                                    className={cn('px-2 py-1 rounded-sm cursor-pointer', hoverBg)}
-                                />
+                                {userWorkspaceChannels.map(channel => {
+                                    const activeChannel = currentChannelId === channel.id;
+                                    return (
+                                        <Typography
+                                        key={channel.id}
+                                        variant="p"
+                                        text={`# ${channel.name}`}
+                                        className={cn('px-2 py-1 rounded-sm cursor-pointer',`hover:${secondaryBg}`,
+                                            activeChannel && secondaryBg
+                                        )}
+                                        onClick={() => navigateToChannel(channel.id)}
+                                    />
+                                    )
+                                })}
                             </CollapsibleContent>
                         </Collapsible>
                     </div>
@@ -92,7 +106,7 @@ const InfoSection: FC<{
                                         className="font-bold"
                                     />
                                 </CollapsibleTrigger>
-                                <div className={cn('cursor-pointer p-2 rounded-full', hoverBg)}>
+                                <div className={cn('cursor-pointer p-2 rounded-full', `hover:${secondaryBg}`)}>
                                     <FaPlus />
                                 </div>
                             </div>
@@ -100,12 +114,12 @@ const InfoSection: FC<{
                                 <Typography
                                     variant="p"
                                     text="User Name 1"
-                                    className={cn('px-2 py-1 rounded-sm cursor-pointer', hoverBg)}
+                                    className={cn('px-2 py-1 rounded-sm cursor-pointer', `hover:${secondaryBg}`)}
                                 />
                                 <Typography
                                     variant="p"
                                     text="User Name 2"
-                                    className={cn('px-2 py-1 rounded-sm cursor-pointer', hoverBg)}
+                                    className={cn('px-2 py-1 rounded-sm cursor-pointer', `hover:${secondaryBg}`)}
                                 />
                             </CollapsibleContent>
                         </Collapsible>

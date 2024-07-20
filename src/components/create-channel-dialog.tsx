@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { createChannel } from "@/actions/channels";
+import { useRouter } from "next/navigation";
 
 const CreateChannelDialog: FC<{
   dialogOpen: boolean;
@@ -22,6 +23,8 @@ const CreateChannelDialog: FC<{
   userId,
 }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const router = useRouter();
+
     const formSchema = z.object({
       name: z.string().min(2, {
         message: "Channel name must be at least 2 characters log"
@@ -46,6 +49,7 @@ const CreateChannelDialog: FC<{
           workspaceId,
         });
 
+        router.refresh();
         setIsSubmitting(false);
         setDialogOpen(false);
         form.reset();
@@ -91,7 +95,7 @@ const CreateChannelDialog: FC<{
                 <FormMessage />
               </FormItem>}
               />
-              <Button  className="mt-3"  disabled={isSubmitting} type="submit">
+              <Button className="mt-3" disabled={isSubmitting} type="submit">
                 {isSubmitting ? 'Creating...' : 'Create'}
               </Button>
             </form>
