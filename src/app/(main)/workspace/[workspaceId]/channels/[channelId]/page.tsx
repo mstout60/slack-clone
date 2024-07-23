@@ -53,7 +53,12 @@ const ChannelIdPage = async (
         </div>
       </div>
       <div className="mt-10">
-        <TextEditor />
+        <TextEditor
+          apiUrl="/api/web-socket/messages"
+          type="Channel"
+          channel={currentChannelData}
+          workspaceData={currentWorkspaceData}
+        />
       </div>
     </div>
   );
